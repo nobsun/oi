@@ -6,15 +6,11 @@
 -- Maintainer  : nobsun@sampou.org
 -- Stability   : experimental
 --
-{-# LANGUAGE TypeOperators
-            ,BangPatterns
-  #-}
+{-# LANGUAGE TypeOperators #-}
 module Data.OI.Combinator
   (
-   -- * Utility functions
-   choice
    -- * Interaction Combinators
-  ,(|:|)
+   (|:|)
   ,(|>|),(|/|)
   ,(|><|)
    -- * Iteration
@@ -34,12 +30,6 @@ module Data.OI.Combinator
 
 import Data.OI.Internal
 import Data.OI.Force
-
-(|>) :: (a -> b) -> (b -> c) -> (a -> c)
-(|>) = flip (.)
-
-choice :: a -> a -> Bool -> a
-choice t f c = if c then t else f
 
 -- | Connect two interactions into an interaction
 
@@ -63,6 +53,7 @@ infixl 1 |><|
   (a,b) -> (c,d) where (q,c) = f a p; (p,d) = g b q
 
 -- | Iteration
+
 foldOI :: (a :-> (b -> b)) -> b -> ([a] :-> b)
 foldOI op z xxs = case deList xxs of
   Just (x,xs) -> x `op` foldOI op z xs
@@ -104,6 +95,7 @@ choiceOIOn :: (t -> a :-> c) -> (t -> b :-> c) -> (t -> Bool)
 choiceOIOn f g p x = choiceOI (f x) (g x) (p x)
 
 -- | Sequencing
+
 seqsOI :: [a :-> b] -> ([a] :-> ())
 seqsOI s os =  forceSeq $ zipWithOI ($) s os
 

@@ -1,4 +1,4 @@
-EXECS = echo recdircs talk catsSIO catsIO catsLIO catsOI
+EXECS = echo recdircs talk cats cats2 morec
 
 all	: $(EXECS)
 
@@ -11,16 +11,13 @@ recdircs	: recdircs.hs
 talk	: talk.hs
 	ghc --make -O0 -threaded $< -o $@
 
-catsIO	: catsIO.hs
+cats	: cats.hs
 	ghc --make -O0 -threaded $< -o $@
 
-catsSIO	: catsSIO.hs
+cats2	: cats2.hs
 	ghc --make -O0 -threaded $< -o $@
 
-catsLIO	: catsLIO.hs
-	ghc --make -O0 -threaded $< -o $@
-
-catsOI	: catsOI.hs
+morec	: morec.hs
 	ghc --make -O0 -threaded $< -o $@
 
 clean	:

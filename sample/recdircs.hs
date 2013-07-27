@@ -42,3 +42,6 @@ getDirCsRec fp oss = case deList oss of
     (False, fps) -> (os,fps)
     (True,  fps) -> second concat $ mapAccumL (flip getDirCsRec) os fps
   _           -> error $ "getDirCs: perhaps `"++ fp ++"' is not found"
+
+choice :: a -> a -> Bool -> a
+choice t f c = if c then t else f

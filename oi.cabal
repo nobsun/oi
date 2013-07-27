@@ -1,5 +1,5 @@
 Name:			oi
-Version:		0.2.1.0
+Version:		0.3.1
 Category:		Data
 Synopsis:		Library for purely functional lazy interactions with the outer world.
 Description:		This package implements a data structure and operations on it for writing interactive program with no imperative flavor of IO monads.
@@ -15,12 +15,12 @@ Build-Type:		Simple
 Cabal-Version:		>= 1.14
 
 Data-dir:		sample
-Data-files:		Makefile catsSIO.hs catsLIO.hs catsIO.hs catsOI.hs echo.hs recdircs.hs talk.hs
+Data-files:		Makefile cats.hs cats2.hs echo.hs morec.hs recdircs.hs talk.hs
 
 Library
   Default-Language:         Haskell2010
   Hs-Source-Dirs:	    src/
-  Build-Depends:	    base >= 4.5 && < 5, parallel, comonad >= 3, filepath
+  Build-Depends:	    base >= 4.5 && < 5, parallel, comonad >= 3, filepath, directory, SafeSemaphore
   GHC-Options:		    -Wall -O0
   Exposed-modules:	    Data.OI
                            ,Data.OI.Internal
@@ -28,6 +28,7 @@ Library
                            ,Data.OI.Force
                            ,Data.OI.IFun
                            ,Data.OI.IO
+                           ,Data.OI.Merge
                            ,Data.OI.Resource
                            ,Data.OI.System
 

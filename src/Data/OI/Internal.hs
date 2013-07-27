@@ -19,6 +19,9 @@ module Data.OI.Internal
   ,(:->)
   -- * Primitive operators on OI
   ,(??)
+  ,(##)
+  -- * Assign operator
+  ,(=:)
   -- * Splitters against `OI' datatype
   ,dePair
   ,deList
@@ -39,14 +42,14 @@ module Data.OI.Internal
   where
 
 import Control.Applicative
-import Control.Category
+-- import Control.Category
 import Control.Comonad
 import Control.Exception
-import Control.Monad
+-- import Control.Monad
 import Control.Concurrent
 import Control.Parallel
 import System.IO.Unsafe
-import Prelude hiding ((.),id,catch)
+-- import Prelude hiding ((.),id,catch)
 
 -- | Datatype for intermediating interaction: 
 -- @OI@ has two states (programmer cannot distinguish), non-expressed and exressed.
@@ -81,6 +84,10 @@ instance Comonad OI where
 -- | Reference operator
 (##) :: a -> OI a
 (##) x = OI (unsafeNew x) x
+
+-- | Assign Operator
+(=:) :: a -> OI a -> a
+(=:) !x (OI var val) = put (return x) var `pseq` val
 
 -- | Decomposer for pair
 dePair :: OI (a,b) -> (OI a, OI b)

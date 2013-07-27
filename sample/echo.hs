@@ -3,39 +3,50 @@ module Main where
 
 import Data.OI hiding (isEOF)
 
-import Data.Char
+import Data.Maybe
 import System.IO
 
+import qualified System.Environment as Sys (getArgs)
+
 main :: IO ()
-main = runInteraction $ pmain1
+main =  runInteraction pmain
 
-pmain0 = forceSeq . mapOI echo
-pmain1 = forceSeq . echos
+pmain :: ([String], Either [(Maybe Char, Maybe ())] ([Maybe Char], [Maybe ()])) :-> ()
+pmain = null . getArgs |/| choiceOI pmain0 pmain1
 
-eof :: Int
-eof = -1
+pmain0 :: [(Maybe Char, Maybe ())] :-> ()
+pmain0 = forceSeq . takeWhile isJust . mapOI echochar
 
-getc :: Int :-> Int
+pmain1 :: ([Maybe Char], [Maybe ()]) :-> ()
+pmain1 = forceSeq . echostring
+
+getc :: Maybe Char :-> Maybe Char
 getc = iooi getchar
 
-putc :: Char -> () :-> ()
-putc = iooi . putChar
+putc :: Maybe Char -> Maybe () :-> Maybe ()
+putc = iooi . putchar
 
-putc' :: Int -> () :-> ()
-putc' (-1) = const ()
-putc' c    = iooi (putChar (chr c))
+getchar :: IO (Maybe Char)
+getchar = choice (return Nothing) (return . Just =<< getChar) =<< isEOF 
 
-gets :: [Int] :-> String
-gets = map chr . takeWhile (eof /=) . mapOI getc
+putchar :: Maybe Char -> IO (Maybe ())
+putchar = maybe (return Nothing)
+                ((return . Just =<<) . putChar)
 
-puts :: String -> [()] :-> [()]
-puts = zipWithOI putc
+gets :: [Maybe Char] :-> String
+gets = map fromJust . takeWhile isJust . mapOI getc
 
-getchar :: IO Int
-getchar = choice (return (-1)) (return . ord =<< getChar) =<< isEOF 
+puts :: String -> [Maybe ()] :-> [Maybe ()]
+puts = zipWithOI putc . map Just
 
-puts' :: String -> OI [()] -> ()
-puts' = seqsOI . map putc
+echochar :: (Maybe Char, Maybe ()) :-> Maybe ()
+echochar  = getc |/| putc
 
-echo  = getc |/| putc'
-echos = gets |/| puts
+echostring :: ([Maybe Char], [Maybe ()]) :-> [Maybe ()]
+echostring = gets |/| puts
+
+getArgs :: [String] :-> [String]
+getArgs = iooi Sys.getArgs
+
+choice :: a -> a -> Bool -> a
+choice t f c = if c then t else f

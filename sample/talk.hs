@@ -4,7 +4,6 @@ module Main where
 
 import Data.OI
 
-import Control.Concurrent
 import Control.Parallel
 import System.Environment
 
@@ -33,5 +32,3 @@ readkbd = iooi . readFile
 
 showscr :: FilePath -> [String] -> () :-> ()
 showscr s = iooi . writeFile s . unlines
-
-mergeOI = (iooi .) . mergeIO
