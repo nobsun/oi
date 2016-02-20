@@ -36,24 +36,28 @@ Executable oi-cats
   Main-Is:                  cats.hs
   Build-Depends:            base >= 4.5 && < 5
                           , oi
-                           
+  Default-Language:         Haskell2010
+                          
 Executable oi-cats2
   Hs-Source-Dirs:           sample/
   Main-Is:                  cats2.hs
   Build-Depends:            base >= 4.5 && < 5
                           , oi
+  Default-Language:         Haskell2010
                            
 Executable oi-echo
   Hs-Source-Dirs:           sample/
   Main-Is:                  echo.hs
   Build-Depends:            base >= 4.5 && < 5
                           , oi
+  Default-Language:         Haskell2010
                            
 Executable oi-morec
   Hs-Source-Dirs:           sample/
   Main-Is:                  morec.hs
   Build-Depends:            base >= 4.5 && < 5
                           , oi
+  Default-Language:         Haskell2010
                            
 Executable oi-recdircs
   Hs-Source-Dirs:           sample/
@@ -62,6 +66,7 @@ Executable oi-recdircs
                           , directory
                           , filepath
                           , oi
+  Default-Language:         Haskell2010
                            
 Executable oi-talk
   Hs-Source-Dirs:           sample/
@@ -69,6 +74,7 @@ Executable oi-talk
   Build-Depends:            base >= 4.5 && < 5
                           , parallel
                           , oi
+  Default-Language:         Haskell2010
                            
 Source-Repository head
   type:		  git
