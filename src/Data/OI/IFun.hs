@@ -3,7 +3,7 @@
   #-}
 -- |
 -- Module      : Data.OI.IFun
--- Copyright   : (c) Nobuo Yamashita 2012
+-- Copyright   : (c) Nobuo Yamashita 2012-2016
 -- License     : BSD3
 -- Author      : Nobuo Yamashita
 -- Maintainer  : nobsun@sampou.org

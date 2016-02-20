@@ -1,6 +1,13 @@
 {-# LANGUAGE TypeOperators
   #-}
-
+-- |
+-- Module      : Data.OI.System
+-- Copyright   : (c) Nobuo Yamashita 2011-2016
+-- License     : BSD3
+-- Author      : Nobuo Yamashita
+-- Maintainer  : nobsun@sampou.org
+-- Stability   : experimental
+--
 module Data.OI.System 
   (
    args

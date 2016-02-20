@@ -6,7 +6,7 @@
 {-# OPTIONS_GHC -fno-cse #-}
 -- |
 -- Module      : Data.OI.Base
--- Copyright   : (c) Nobuo Yamashita 2011-2012
+-- Copyright   : (c) Nobuo Yamashita 2011-2016
 -- License     : BSD3
 -- Author      : Nobuo Yamashita
 -- Maintainer  : nobsun@sampou.org
@@ -41,7 +41,7 @@ module Data.OI.Internal
   ) 
   where
 
-import Control.Applicative
+-- import Control.Applicative
 -- import Control.Category
 import Control.Comonad
 import Control.Exception
@@ -68,6 +68,10 @@ infixr 0 :->
 
 instance Functor OI where
   fmap f = (##) . f . (??)
+
+instance Applicative OI where
+  pure = (##)
+  f <*> g = ((f ??) (g ??) ##)
 
 instance Monad OI where
   return = (##)
@@ -254,12 +258,15 @@ lazy = unsafeInterleaveIO
 
 -- Unsafe primitive
 
+{-# NOINLINE unsafeNew #-}
 unsafeNew :: a -> LeftValueOf a
 unsafeNew _ = unsafePerformIO newEmptyMVar
 
+{-# NOINLINE unsafeDeref #-}
 unsafeDeref :: MVar a -> a
 unsafeDeref = unsafePerformIO . readMVar
 
+{-# NOINLINE unsafePut #-}
 unsafePut :: a -> MVar a -> a
 unsafePut x v = unsafePerformIO $ do
               { s <- tryPutMVar v x

@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeOperators #-}
 -- |
 -- Module      : Data.OI.Resource
--- Copyright   : (c) Nobuo Yamashita 2011-2012
+-- Copyright   : (c) Nobuo Yamashita 2011-2016
 -- License     : BSD3
 -- Author      : Nobuo Yamashita
 -- Maintainer  : nobsun@sampou.org
