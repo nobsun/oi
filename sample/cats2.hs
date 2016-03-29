@@ -10,15 +10,13 @@ import Prelude hiding (readFile, writeFile)
 main :: IO ()
 main = runInteraction pmain
 
-pmain 
-  :: (([String],Either ((Handle, String), [(Handle, String)]) [(Handle, String)]), (Handle, ()))
-  :-> ()
+pmain :: (([String],Either ((Handle, String), [(Handle, String)]) [(Handle, String)]), (Handle, ())) :-> ()
 pmain = args 
-    |/| ((choiceOI (lines . readFile "files" |/| zipWithOI readFile) . zipWithOI readFile) <*> null)
-    |/| writeFile "output.txt" . concatMap textproc
+    |/| ((choiceOI (lines . readFile "files2" |/| zipWithOI readFile) . zipWithOI readFile) <*> null)
+    |/| writeFile "output2.txt" . concatMap textproc
 
 textproc :: String -> String
-textproc = id -- unlines . take 1 . lines
+textproc = id
 
 readFile :: FilePath -> (Handle, String) :-> String
 readFile f      = openFile f ReadMode   |/| hGetContents
@@ -34,4 +32,3 @@ hGetContents = iooi . IO.hGetContents
 
 hPutStr :: Handle -> String -> () :-> ()
 hPutStr      = (iooi .) . IO.hPutStr
-
