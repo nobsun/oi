@@ -15,6 +15,12 @@ module Data.OI.Resource
   ,inFileResource
   ,outFileResource
   -- * Resource handlers
+  ,useUpR
+  ,useUpRe
+  ,closeR
+  ,concatR
+  ,foldR
+  ,foldR'
   ,mapR
   ,mapR'
   ,filterR
@@ -25,6 +31,7 @@ module Data.OI.Resource
   ,takeWhileR'
   ) where
 
+import Data.Maybe
 import Control.Exception
 import Data.OI.Internal
 import System.IO (IOMode(..))
@@ -36,6 +43,57 @@ data Resource a = Resource { release :: (), stream :: [IOResult a] }
 
 instance (Show a) => Show (Resource a) where
   show r = show (stream r)
+
+useUpR :: IOResult (Resource a) -> Maybe [a]
+useUpR = foldR (:) []
+
+useUpRe :: IOResult (Resource a) -> Maybe [a]
+useUpRe = foldRe (:) []
+
+closeR :: IOResult (Resource ()) -> ()
+closeR result = case result of
+  Success (Resource r rs) -> case dropWhile success rs of
+    [] -> case r of {() -> ()}
+    _  -> ()
+  _                       -> ()
+  where
+    success r = case r of
+      Success () -> True
+      _          -> False
+
+closeR' :: IOResult (Resource ()) -> Maybe ()
+closeR' result = case result of
+  Success (Resource r rs) -> case dropWhile success rs of
+    [] -> case r of {() -> Just ()}
+    _  -> Nothing
+  _                       -> Nothing
+  where
+    success r = case r of
+      Success () -> True
+      _          -> False
+
+concatR :: [IOResult (Resource a)] -> [a]
+concatR = concat . mapMaybe (foldR (:) [])
+
+foldR :: (a -> b -> b) -> b -> IOResult (Resource a) -> Maybe b
+foldR f b result = case result of
+  Success resource -> foldR' f b resource
+  _                -> Nothing
+
+foldRe :: (a -> b -> b) -> b -> IOResult (Resource a) -> Maybe b
+foldRe f b result = case result of
+  Success resource -> foldRe' f b resource
+  _                -> Nothing
+
+foldR' :: (a -> b -> b) -> b -> Resource a -> Maybe b
+foldR' f b (Resource r (Success x:xs)) = return . f x =<< foldR' f b (Resource r xs)
+foldR' f b (Resource r (Failure _:_))  = case r of () -> Just b
+foldR' _ b (Resource r _)              = case r of () -> Nothing
+
+foldRe' :: (a -> b -> b) -> b -> Resource a -> Maybe b
+foldRe' f b (Resource r (Success x:xs)) = return . f x =<< foldRe' f b (Resource r xs)
+foldRe' f b (Resource r (Failure _:_))  = case r of () -> Nothing
+foldRe' _ b (Resource r _)              = case r of () -> Nothing
 
 mapR :: (a -> b) -> IOResult (Resource a) -> [b]
 mapR f (Success res) = mapR' f res
